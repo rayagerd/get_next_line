@@ -6,7 +6,7 @@
 /*   By: rgerdzhi <rgerdzhi@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:28:40 by rgerdzhi          #+#    #+#             */
-/*   Updated: 2024/09/12 21:13:52 by rgerdzhi         ###   ########.fr       */
+/*   Updated: 2024/09/12 21:39:37 by rgerdzhi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -38,6 +38,8 @@ static char	*ft_append_line(char *line, char *buf, int *pos, int len)
 static int	ft_read_buffer(int fd, char *buf, int *len)
 {
 	*len = read(fd, buf, BUFFER_SIZE);
+	if (*len == 0)
+		free(buf);
 	if (*len <= 0)
 		return (0);
 	return (1);
@@ -60,7 +62,7 @@ static char	*ft_get_line(int fd, char *buf, int *pos, int *len)
 		line = ft_append_line(line, buf, pos, *len);
 		if (*pos == 0)
 		{
-			*len = read(fd, buf, BUFFER_SIZE);
+			ft_read_buffer(fd, buf, len);
 			if (*len <= 0)
 				return (line);
 		}
@@ -74,10 +76,15 @@ char	*get_next_line(int fd)
 	int			pos;
 	int			len;
 
-	pos = 0;
-	buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
+	pos = 0;
+	if (!buf)
+	{
+		buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
+		if (!buf)
+			return (NULL);
+	}
 	return (ft_get_line(fd, buf, &pos, &len));
 }
 /*
