@@ -35,34 +35,48 @@ static char	*ft_append_line(char *line, char *buf, int *pos, int len)
     return (new_line);
 }
 
-char	*get_next_line(int fd)
+static int	ft_read_buffer(int fd, char *buf, int *len)
 {
-    char	buf[BUFFER_SIZE];
-    static int	pos;
-    static int	len;
-    char		*line;
+    *len = read(fd, buf, BUFFER_SIZE);
+    if (*len <= 0)
+        return (0);
+    return (1);
+}
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
-        return (NULL);
+static char	*ft_get_line(int fd, char *buf, int *pos, int *len)
+{
+    char	*line;
+
     line = malloc((BUFFER_SIZE + 1) * sizeof(char));
     if (!line)
         return (NULL);
-    if (pos == 0 && ft_read_buffer(fd, buf, &len) == 0)
+    if (*pos == 0 && ft_read_buffer(fd, buf, len) == 0)
     {
-            free(line);
-            return (NULL);
+        free(line);
+        return (NULL);
     }
-    while (line && pos < len)
+    while (line && *pos < *len)
     {
-        line = ft_append_line(line, buf, &pos, len);
-        if (pos == 0)
+        line = ft_append_line(line, buf, pos, *len);
+        if (*pos == 0)
         {
-            len = read(fd, buf, BUFFER_SIZE);
-            if (len <= 0)
+            *len = read(fd, buf, BUFFER_SIZE);
+            if (*len <= 0)
                 return (line);
         }
     }
     return (line);
+}
+
+char	*get_next_line(int fd)
+{
+    static char	buf[BUFFER_SIZE];
+    static int	pos;
+    static int	len;
+
+    if (fd < 0 || BUFFER_SIZE <= 0)
+        return (NULL);
+    return (ft_get_line(fd, buf, &pos, &len));
 }
 
 /*
