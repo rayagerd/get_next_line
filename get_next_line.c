@@ -1,18 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rgerdzhi <rgerdzhi@student.42barcelon      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/12 17:28:40 by rgerdzhi          #+#    #+#             */
+/*   Updated: 2024/09/12 18:46:57 by rgerdzhi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "get_next_line.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
-#include <fcntl.h>
 
-
-static  char *append_line(char *line, char *buf, int *pos, int len)
+static char	*ft_append_line(char *line, char *buf, int *pos, int len)
 {
-    int i = 0;
+    int		i;
+	char	*new_line;
 
+	i = 0;
     while (*pos + i < len && buf[*pos + i] != '\n')
         i++;
-    char *new_line = malloc(strlen(line) + i + 1);
+    new_line = malloc(strlen(line) + i + 1);
     if (!new_line)
         return NULL;
     strcpy(new_line, line);
@@ -28,30 +35,26 @@ static  char *append_line(char *line, char *buf, int *pos, int len)
     return (new_line);
 }
 
-char    *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-    static char buf[BUFFER_SIZE];
-    static int  pos;
-    static int  len;
-    char        *line;
+    char	buf[BUFFER_SIZE];
+    static int	pos;
+    static int	len;
+    char		*line;
 
-
-    line = malloc(1);
+	if (fd < 0 || BUFFER_SIZE <= 0)
+        return (NULL);
+    line = malloc((BUFFER_SIZE + 1) * sizeof(char));
     if (!line)
-        return NULL;
-    line[0] = '\0';
-    if (pos == 0)
+        return (NULL);
+    if (pos == 0 && ft_read_buffer(fd, buf, &len) == 0)
     {
-        len = read(fd, buf, BUFFER_SIZE);
-        if (len <= 0)
-        {
             free(line);
-            return NULL;
-        }
+            return (NULL);
     }
     while (line && pos < len)
     {
-        line = append_line(line, buf, &pos, len);
+        line = ft_append_line(line, buf, &pos, len);
         if (pos == 0)
         {
             len = read(fd, buf, BUFFER_SIZE);
@@ -59,8 +62,10 @@ char    *get_next_line(int fd)
                 return (line);
         }
     }
-    return line;
+    return (line);
 }
+
+/*
 int main(void)
 {
     int fd = open("test.txt", O_RDONLY);
@@ -79,4 +84,4 @@ int main(void)
 
     close(fd);
     return 0;
-}
+}*/
