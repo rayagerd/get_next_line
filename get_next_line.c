@@ -39,7 +39,10 @@ static int	ft_read_buffer(int fd, char *buf, int *len)
 {
 	*len = read(fd, buf, BUFFER_SIZE);
 	if (*len == 0)
+	{
 		free(buf);
+		buf = NULL;
+	}
 	if (*len <= 0)
 		return (0);
 	return (1);
@@ -82,7 +85,13 @@ char	*get_next_line(int fd)
 	if (!buf)
 	{
 		buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
-		if (!buf)
+	char *line = ft_get_line(fd, buf, &pos, &len);
+	if (line == NULL)
+	{
+		free(buf);
+		buf = NULL;
+	}
+	return (line);
 			return (NULL);
 	}
 	return (ft_get_line(fd, buf, &pos, &len));
