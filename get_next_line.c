@@ -6,7 +6,7 @@
 /*   By: rgerdzhi <rgerdzhi@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:28:40 by rgerdzhi          #+#    #+#             */
-/*   Updated: 2024/09/13 19:40:44 by rgerdzhi         ###   ########.fr       */
+/*   Updated: 2024/09/18 20:16:17 by rgerdzhi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -21,13 +21,16 @@ static char	*ft_append_line(char *line, char *buf, int *pos, int len)
 		i++;
 	new_line = malloc(ft_strlen(line) + i + 1);
 	if (!new_line)
+	{
+		free(line);
 		return (NULL);
+	}
 	ft_strcpy(new_line, line);
 	ft_strncat(new_line, buf + *pos, i);
 	free(line);
 	line = NULL;
 	*pos += i;
-	if (*pos < len)
+	if (*pos < len && buf[*pos] == '\n')
 	{
 		(*pos)++;
 		return (new_line);
@@ -39,13 +42,9 @@ static char	*ft_append_line(char *line, char *buf, int *pos, int len)
 static int	ft_read_buffer(int fd, char *buf, int *len)
 {
 	*len = read(fd, buf, BUFFER_SIZE);
-	if (*len == 0)
-	{
-		free(buf);
-		buf = NULL;
-	}
 	if (*len <= 0)
 		return (0);
+	buf[*len] = '\0';
 	return (1);
 }
 
@@ -66,8 +65,7 @@ static char	*ft_get_line(int fd, char *buf, int *pos, int *len)
 		line = ft_append_line(line, buf, pos, *len);
 		if (*pos == 0)
 		{
-			ft_read_buffer(fd, buf, len);
-			if (*len <= 0)
+			if (!ft_read_buffer(fd, buf, len))
 				return (line);
 		}
 	}
@@ -89,16 +87,20 @@ char	*get_next_line(int fd)
 		buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
 		if (!buf)
 			return (NULL);
+		ft_memset(buf, '\0', BUFFER_SIZE + 1);
 	}
 	line = ft_get_line(fd, buf, &pos, &len);
-	if (line == NULL)
+	if (!line)
 	{
-		free(buf);
-		buf = NULL;
+		if (buf != NULL)
+		{
+			free(buf);
+			buf = NULL;
+		}
 	}
 	return (line);
 }
-
+/*
 int main(void)
 {
 	char	*line = NULL;
@@ -116,3 +118,4 @@ int main(void)
 	close(fd1);
 	return (0);
 }
+*/

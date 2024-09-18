@@ -6,7 +6,7 @@
 /*   By: rgerdzhi <rgerdzhi@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:33:18 by rgerdzhi          #+#    #+#             */
-/*   Updated: 2024/09/12 21:15:34 by rgerdzhi         ###   ########.fr       */
+/*   Updated: 2024/09/18 20:15:33 by rgerdzhi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -28,7 +28,7 @@ char	*ft_strcpy(char *dst, const char *src)
 	char	*dst_start;
 
 	if (!src || !dst)
-		return (0);
+		return (NULL);
 	dst_start = dst;
 	while (*src)
 		*dst++ = *src++;
@@ -42,7 +42,7 @@ char	*ft_strncat(char *dst, const char *src, size_t n)
 	size_t	dst_len;
 
 	if (!src || !dst)
-		return (0);
+		return (NULL);
 	dst_len = ft_strlen(dst);
 	i = 0;
 	while (i < n && src[i] != '\0')
@@ -52,4 +52,21 @@ char	*ft_strncat(char *dst, const char *src, size_t n)
 	}
 	dst[dst_len + i] = '\0';
 	return (dst);
+}
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	size_t			i;
+	unsigned char	*ptr;
+
+	if (!s)
+		return (NULL);
+	ptr = (unsigned char *)s;
+	i = 0;
+	while (i < n)
+	{
+		ptr[i] = (unsigned char)c;
+		i++;
+	}
+	return (s);
 }

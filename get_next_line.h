@@ -6,7 +6,7 @@
 /*   By: rgerdzhi <rgerdzhi@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:28:56 by rgerdzhi          #+#    #+#             */
-/*   Updated: 2024/09/12 20:36:52 by rgerdzhi         ###   ########.fr       */
+/*   Updated: 2024/09/18 20:07:32 by rgerdzhi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef GET_NEXT_LINE_H
@@ -25,4 +25,5 @@ char		*get_next_line(int fd);
 size_t		ft_strlen(char *str);
 char		*ft_strcpy(char *dst, const char *src);
 char		*ft_strncat(char *dst, const char *src, size_t n);
+void		*ft_memset(void *s, int c, size_t n);
 #endif
