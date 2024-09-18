@@ -6,7 +6,7 @@
 /*   By: rgerdzhi <rgerdzhi@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:28:40 by rgerdzhi          #+#    #+#             */
-/*   Updated: 2024/09/18 21:15:27 by rgerdzhi         ###   ########.fr       */
+/*   Updated: 2024/09/18 21:53:22 by rgerdzhi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -50,8 +50,8 @@ static int	ft_read_buffer(int fd, char *buf)
 	int	len;
 
 	len = read(fd, buf, BUFFER_SIZE);
-	if (len <= 0)
-		return (len);
+	if (len < 0)
+		return (-1);
 	buf[len] = '\0';
 	return (len);
 }
@@ -65,7 +65,7 @@ static char	*ft_get_line(int fd, char *buf)
 	if (!line)
 		return (NULL);
 	line[0] = '\0';
-	if (buf[0] != '\0')
+	if (buf && buf[0])
 	{
 		ft_check_buf(buf);
 		line = ft_append_line(line, buf);

@@ -6,7 +6,7 @@
 /*   By: rgerdzhi <rgerdzhi@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:33:18 by rgerdzhi          #+#    #+#             */
-/*   Updated: 2024/09/18 21:08:52 by rgerdzhi         ###   ########.fr       */
+/*   Updated: 2024/09/18 21:50:39 by rgerdzhi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -56,44 +56,42 @@ char	*ft_strncat(char *dst, const char *src, size_t n)
 
 char	*ft_strchr(const char *s, int c)
 {
-	char	ch;
-
-	ch = (char)c;
-	if (!s)
-		return (NULL);
 	while (*s)
 	{
-		if (*s == ch)
+		if (*s == (char)c)
 			return ((char *)s);
 		s++;
 	}
-	if (ch == '\0')
+	if (*s == (char)c)
 		return ((char *)s);
 	return (NULL);
 }
 
 void	*ft_memmove(void *dest, const void *src, size_t n)
 {
-	void	*dest_ptr;
+	unsigned char	*d;
+	unsigned char	*s;
+	size_t			i;
 
-	dest_ptr = dest;
-	if (!dest && !src)
-		return (dest);
-	if (dest == src)
-		return (dest);
-	if (dest > src)
+	d = (unsigned char *) dest;
+	s = (unsigned char *) src;
+	if (s < d && s + n > d)
 	{
-		while (n--)
+		i = n;
+		while (i > 0)
 		{
-			((char *)dest)[n] = ((const char *)src)[n];
+			d[i - 1] = s[i -1];
+			i--;
 		}
 	}
 	else
 	{
-		while (n--)
+		i = 0;
+		while (i < n)
 		{
-			*(char *)dest++ = *(const char *)src++;
+			d[i] = s[i];
+			i++;
 		}
 	}
-	return (dest_ptr);
+	return (dest);
 }
