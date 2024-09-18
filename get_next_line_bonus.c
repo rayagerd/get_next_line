@@ -6,7 +6,7 @@
 /*   By: rgerdzhi <rgerdzhi@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:28:40 by rgerdzhi          #+#    #+#             */
-/*   Updated: 2024/09/18 21:18:48 by rgerdzhi         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:15:33 by rgerdzhi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line_bonus.h"
@@ -76,9 +76,9 @@ static char	*ft_get_line(int fd, char *buf)
 	}
 	while (line && (!buf[0] || !ft_strchr(buf, '\n')))
 	{
-		len = ft_read_buffer(fd, buf); 
+		len = ft_read_buffer(fd, buf);
 		if (len == 0)
-			break ; 
+			break ;
 		if (len < 0)
 		{
 			free(line);

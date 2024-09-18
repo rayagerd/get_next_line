@@ -6,7 +6,7 @@
 /*   By: rgerdzhi <rgerdzhi@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:33:18 by rgerdzhi          #+#    #+#             */
-/*   Updated: 2024/09/18 21:19:17 by rgerdzhi         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:17:13 by rgerdzhi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line_bonus.h"
