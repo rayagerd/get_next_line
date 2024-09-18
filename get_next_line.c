@@ -29,8 +29,12 @@ static char	*ft_append_line(char *line, char *buf)
 	int		pos_n;
 	char	*new_line;
 
+	if (!*buf)
+		return (line);
 	pos_n = 0;
 	while (buf[pos_n] && buf[pos_n] != '\n')
+		pos_n++;
+	if (buf[pos_n] && buf[pos_n] == '\n')
 		pos_n++;
 	new_line = malloc(ft_strlen(line) + pos_n + 1);
 	if (!new_line)
@@ -47,13 +51,13 @@ static char	*ft_append_line(char *line, char *buf)
 
 static int	ft_read_buffer(int fd, char *buf)
 {
-	int	len;
+	int	bytes_read;
 
-	len = read(fd, buf, BUFFER_SIZE);
-	if (len < 0)
+	bytes_read = read(fd, buf, BUFFER_SIZE);
+	if (bytes_read < 0)
 		return (-1);
-	buf[len] = '\0';
-	return (len);
+	buf[bytes_read] = '\0';
+	return (bytes_read);
 }
 
 static char	*ft_get_line(int fd, char *buf)
@@ -70,12 +74,12 @@ static char	*ft_get_line(int fd, char *buf)
 		ft_check_buf(buf);
 		line = ft_append_line(line, buf);
 	}
-	while (!buf[0] || !ft_strchr(buf, '\n'))
+	while (line && (!buf[0] || !ft_strchr(buf, '\n')))
 	{
-		len = ft_read_buffer(fd, buf);
+		len = ft_read_buffer(fd, buf); 
 		if (len == 0)
-			break ;
-		if (len == -1)
+			break ; 
+		if (len < 0)
 		{
 			free(line);
 			return (0);

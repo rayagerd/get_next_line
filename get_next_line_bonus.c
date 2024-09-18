@@ -9,7 +9,7 @@
 /*   Updated: 2024/09/18 21:18:48 by rgerdzhi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	ft_check_buf(char *buf)
 {
@@ -29,8 +29,12 @@ static char	*ft_append_line(char *line, char *buf)
 	int		pos_n;
 	char	*new_line;
 
+	if (!*buf)
+		return (line);
 	pos_n = 0;
 	while (buf[pos_n] && buf[pos_n] != '\n')
+		pos_n++;
+	if (buf[pos_n] && buf[pos_n] == '\n')
 		pos_n++;
 	new_line = malloc(ft_strlen(line) + pos_n + 1);
 	if (!new_line)
@@ -47,13 +51,13 @@ static char	*ft_append_line(char *line, char *buf)
 
 static int	ft_read_buffer(int fd, char *buf)
 {
-	int	len;
+	int	bytes_read;
 
-	len = read(fd, buf, BUFFER_SIZE);
-	if (len <= 0)
-		return (len);
-	buf[len] = '\0';
-	return (len);
+	bytes_read = read(fd, buf, BUFFER_SIZE);
+	if (bytes_read < 0)
+		return (-1);
+	buf[bytes_read] = '\0';
+	return (bytes_read);
 }
 
 static char	*ft_get_line(int fd, char *buf)
@@ -65,17 +69,17 @@ static char	*ft_get_line(int fd, char *buf)
 	if (!line)
 		return (NULL);
 	line[0] = '\0';
-	if (buf[0] != '\0')
+	if (buf && buf[0])
 	{
 		ft_check_buf(buf);
 		line = ft_append_line(line, buf);
 	}
-	while (!buf[0] || !ft_strchr(buf, '\n'))
+	while (line && (!buf[0] || !ft_strchr(buf, '\n')))
 	{
-		len = ft_read_buffer(fd, buf);
+		len = ft_read_buffer(fd, buf); 
 		if (len == 0)
-			break ;
-		if (len == -1)
+			break ; 
+		if (len < 0)
 		{
 			free(line);
 			return (0);
@@ -87,23 +91,23 @@ static char	*ft_get_line(int fd, char *buf)
 
 char	*get_next_line(int fd)
 {
-	static char	*buf;
+	static char	*buf[1024];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!buf)
+	if (!buf[fd])
 	{
-		buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
-		if (!buf)
+		buf[fd] = malloc((BUFFER_SIZE + 1) * sizeof(char));
+		if (!buf[fd])
 			return (NULL);
-		buf[0] = '\0';
+		buf[fd][0] = '\0';
 	}
-	line = ft_get_line(fd, buf);
-	if (!line || (line[0] == '\0' && !ft_strlen(buf)))
+	line = ft_get_line(fd, buf[fd]);
+	if (!line || (line[0] == '\0' && !ft_strlen(buf[fd])))
 	{
-		free(buf);
-		buf = NULL;
+		free(buf[fd]);
+		buf[fd] = NULL;
 		free(line);
 		return (NULL);
 	}
